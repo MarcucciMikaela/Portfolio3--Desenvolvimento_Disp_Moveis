@@ -1,17 +1,134 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 2
-    </ion-title>
+  <ion-toolbar color="primary">
+    <ion-title>Nova Venda</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="ion-padding green-bg">
+  <div class="sales-container">
+    
+    <!-- CLIENT AND PRODUCT SELECTION CARD -->
+    <ion-card class="sales-card">
+      <ion-card-header>
+        <ion-card-title>Configurar Carrinho</ion-card-title>
+      </ion-card-header>
+      
+      <ion-card-content>
+        <ion-item class="select-item" lines="none">
+          <ion-icon name="people" slot="start" class="select-icon"></ion-icon>
+          <ion-label position="stacked">Selecione o Cliente *</ion-label>
+          <ion-select 
+            placeholder="Escolha o cliente..." 
+            okText="Selecionar" 
+            cancelText="Cancelar"
+            [(ngModel)]="selectedClientId">
+            <ion-select-option *ngFor="let client of clients" [value]="client.id">
+              {{ client.nome }} (CPF: {{ client.cpf }})
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
 
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+        <div class="product-selection-row">
+          <ion-item class="select-item product-select" lines="none">
+            <ion-icon name="cube" slot="start" class="select-icon"></ion-icon>
+            <ion-label position="stacked">Adicionar Produto</ion-label>
+            <ion-select 
+              placeholder="Escolha o produto..." 
+              okText="Selecionar" 
+              cancelText="Cancelar"
+              [(ngModel)]="selectedProductId">
+              <ion-select-option *ngFor="let prod of products" [value]="prod.id" [disabled]="prod.quantidade_estoque <= 0">
+                {{ prod.nome }} - R$ {{ prod.preco_venda.toFixed(2) }} (Estoque: {{ prod.quantidade_estoque }})
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <ion-item class="qty-item" lines="none">
+            <ion-label position="stacked">Qtd</ion-label>
+            <ion-input 
+              type="number" 
+              [(ngModel)]="selectedQuantity" 
+              min="1">
+            </ion-input>
+          </ion-item>
+        </div>
+
+        <ion-button expand="block" color="primary" class="add-to-cart-btn" (click)="addToCart()">
+          <ion-icon name="cart" slot="start"></ion-icon>
+          Adicionar ao Carrinho
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- SHOPPING CART ITEMS LIST -->
+    <ion-card class="sales-card cart-list-card ion-margin-top">
+      <ion-card-header class="cart-header">
+        <ion-card-title>
+          Itens no Carrinho 
+          <ion-badge color="success" *ngIf="cartItems.length > 0">{{ cartItems.length }}</ion-badge>
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content class="cart-content">
+        <div *ngIf="cartItems.length === 0" class="empty-cart-message">
+          <ion-icon name="cart" class="empty-icon"></ion-icon>
+          <p>O carrinho de compras está vazio</p>
+          <p class="empty-sub">Selecione produtos acima para iniciar a venda</p>
+        </div>
+
+        <ion-list lines="full" class="cart-items-list" *ngIf="cartItems.length > 0">
+          <ion-item *ngFor="let item of cartItems; let idx = index" class="cart-item-row">
+            <div class="cart-item-info">
+              <h3>{{ item.produto.nome }}</h3>
+              <p class="price-details">R$ {{ item.preco_unitario.toFixed(2) }} cada</p>
+              <h4 class="subtotal-label">Subtotal: R$ {{ item.subtotal.toFixed(2) }}</h4>
+            </div>
+
+            <!-- QUANTITY ADJUST CONTROLS -->
+            <div class="cart-item-actions" slot="end">
+              <div class="qty-adjuster">
+                <ion-button fill="clear" size="small" color="primary" (click)="decreaseQuantity(idx)">
+                  <ion-icon name="remove"></ion-icon>
+                </ion-button>
+                <span class="qty-display">{{ item.quantidade }}</span>
+                <ion-button fill="clear" size="small" color="primary" (click)="increaseQuantity(idx)">
+                  <ion-icon name="add"></ion-icon>
+                </ion-button>
+              </div>
+              
+              <ion-button fill="clear" color="danger" size="small" class="delete-btn" (click)="removeFromCart(idx)">
+                <ion-icon name="trash"></ion-icon>
+              </ion-button>
+            </div>
+          </ion-item>
+        </ion-list>
+
+        <!-- CART SUMMARY AND ACTION -->
+        <div class="cart-summary" *ngIf="cartItems.length > 0">
+          <div class="total-row">
+            <span>VALOR TOTAL:</span>
+            <span class="total-amount">R$ {{ totalValue.toFixed(2) }}</span>
+          </div>
+
+          <ion-button expand="block" color="success" class="checkout-btn" (click)="onCheckout()">
+            <ion-icon name="checkmark-circle" slot="start"></ion-icon>
+            Efetivar Venda
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- DISCREET BACK TO LOGIN LINK -->
+  <div class="back-to-login-container print-hide">
+    <a (click)="goToLogin()" class="back-to-login-link">Voltar à tela de Login</a>
+  </div>
+
+  <ion-toast 
+    [isOpen]="isToastOpen" 
+    [message]="toastMessage" 
+    [duration]="3000" 
+    (didDismiss)="setToastOpen(false)"
+    class="custom-toast">
+  </ion-toast>
 </ion-content>

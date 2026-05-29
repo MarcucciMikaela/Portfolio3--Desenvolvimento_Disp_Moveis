@@ -1,17 +1,170 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 3
-    </ion-title>
+  <ion-toolbar color="primary">
+    <ion-title>Histórico de Vendas</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="onPrintReport()">
+        <ion-icon slot="icon-only" name="print"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="ion-padding green-bg">
+  <div class="reports-container">
+    <ion-card class="report-header-card">
+      <ion-card-header>
+        <ion-card-title>Faturamento & Relatórios</ion-card-title>
+        <p class="subtitle">Consulte o histórico de vendas integrando clientes, itens e financeiro</p>
+      </ion-card-header>
+    </ion-card>
 
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+    <!-- REPORT SALES LIST -->
+    <div *ngIf="salesReport.length === 0" class="empty-state">
+      <ion-icon name="document-text" class="empty-icon"></ion-icon>
+      <p>Nenhuma venda registrada</p>
+      <p class="empty-sub">As vendas finalizadas no carrinho serão listadas aqui</p>
+    </div>
+
+    <div *ngIf="salesReport.length > 0" class="sales-list-wrapper">
+      <div 
+        *ngFor="let sale of salesReport" 
+        class="sale-card" 
+        [class.is-expanded]="expandedSaleId === sale.id"
+        (click)="toggleExpand(sale)">
+        
+        <div class="sale-card-header">
+          <div class="sale-info">
+            <span class="sale-id">Venda #{{ sale.id }}</span>
+            <span class="sale-date">{{ sale.data_venda | date:'dd/MM/yyyy' }}</span>
+          </div>
+
+          <div class="sale-client">
+            <ion-icon name="people" class="client-icon"></ion-icon>
+            <strong>{{ sale.cliente_nome }}</strong>
+          </div>
+        </div>
+
+        <div class="sale-card-body">
+          <div class="sale-total-section">
+            <span class="total-label">Total:</span>
+            <span class="total-val">R$ {{ sale.valor_total.toFixed(2) }}</span>
+          </div>
+
+          <div class="sale-status-section">
+            <!-- FINANCE STATUS BADGE -->
+            <ion-badge [color]="sale.financeiro_status === 'Pago' ? 'success' : 'warning'" class="status-badge">
+              {{ sale.financeiro_status }}
+            </ion-badge>
+
+            <!-- PAY BILL BUTTON -->
+            <ion-button 
+              *ngIf="sale.financeiro_status === 'Pendente'" 
+              color="success" 
+              fill="outline" 
+              size="small" 
+              class="pay-bill-btn"
+              (click)="onPayBill($event, sale)">
+              <ion-icon name="cash" slot="start"></ion-icon>
+              Pagar
+            </ion-button>
+
+            <!-- CANCEL SALE BUTTON -->
+            <ion-button 
+              color="danger" 
+              fill="outline" 
+              size="small" 
+              class="cancel-sale-btn"
+              (click)="onCancelSale($event, sale)">
+              <ion-icon name="trash" slot="start"></ion-icon>
+              Cancelar
+            </ion-button>
+          </div>
+
+          <div class="expand-icon">
+            <ion-icon [name]="expandedSaleId === sale.id ? 'chevron-up' : 'chevron-down'"></ion-icon>
+          </div>
+        </div>
+
+        <!-- EXPANDABLE SECTION FOR SALE ITEMS DETAILS -->
+        <div class="sale-card-details" *ngIf="expandedSaleId === sale.id" (click)="$event.stopPropagation()">
+          <div class="details-divider"></div>
+          <h4>Produtos Adquiridos</h4>
+          
+          <div class="details-loader" *ngIf="!sale.items">
+            <p>Carregando itens...</p>
+          </div>
+
+          <div class="items-table-container" *ngIf="sale.items">
+            <table class="items-table">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th class="text-center">Qtd</th>
+                  <th class="text-right">Unitário</th>
+                  <th class="text-right">Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of sale.items">
+                  <td>{{ item.produto_nome }}</td>
+                  <td class="text-center">{{ item.quantidade }}</td>
+                  <td class="text-right">R$ {{ item.preco_unitario.toFixed(2) }}</td>
+                  <td class="text-right">R$ {{ (item.quantidade * item.preco_unitario).toFixed(2) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CANCELED SALES LIST -->
+    <div *ngIf="canceledSales.length > 0" class="canceled-sales-wrapper">
+      <h3 class="section-title">Vendas Canceladas</h3>
+      
+      <div *ngFor="let sale of canceledSales" class="sale-card canceled-card">
+        <div class="sale-card-header">
+          <div class="sale-info">
+            <span class="sale-id">Venda #{{ sale.venda_id }}</span>
+            <span class="sale-date" style="color: var(--ion-color-danger);">Cancelada em: {{ sale.data_cancelamento | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="sale-client">
+            <ion-icon name="people" class="client-icon"></ion-icon>
+            <strong>{{ sale.cliente_nome }}</strong>
+          </div>
+        </div>
+        
+        <div class="sale-card-body" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+          <div style="display: flex; justify-content: space-between; width: 100%;">
+            <div>
+              <span class="total-label">Total original: </span>
+              <span class="total-val" style="text-decoration: line-through; color: var(--ion-color-medium); font-size: 1.1rem; font-weight: 700;">R$ {{ sale.valor_total.toFixed(2) }}</span>
+            </div>
+            <div>
+              <span class="sale-date" style="font-size: 0.8rem; color: #94a3b8;">Venda realizada: {{ sale.data_venda | date:'dd/MM/yyyy' }}</span>
+            </div>
+          </div>
+          
+          <div class="justification-box" style="width: 100%; padding: 8px 12px; background: rgba(235, 68, 90, 0.08); border-left: 3px solid var(--ion-color-danger); border-radius: 4px; margin-top: 4px;">
+            <p style="margin: 0; font-size: 13px; color: var(--ion-color-danger-shade);">
+              <strong>Justificativa do cancelamento:</strong> {{ sale.justificativa }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DISCREET BACK TO LOGIN LINK -->
+  <div class="back-to-login-container print-hide">
+    <a (click)="goToLogin()" class="back-to-login-link">Voltar à tela de Login</a>
+  </div>
+
+  <ion-toast 
+    [isOpen]="isToastOpen" 
+    [message]="toastMessage" 
+    [duration]="3000" 
+    (didDismiss)="setToastOpen(false)"
+    class="custom-toast">
+  </ion-toast>
 </ion-content>

@@ -1,0 +1,79 @@
+<ion-content [fullscreen]="true" class="login-background">
+  <div class="login-container">
+    <div class="login-header">
+      <div class="logo-box">
+        <ion-icon name="cart" class="logo-icon"></ion-icon>
+      </div>
+      <h1>MeuAppdeVendas</h1>
+      <p>Sistema de Vendas</p>
+    </div>
+
+    <ion-card class="login-card">
+      <ion-card-header>
+        <ion-card-title>Seja Bem-vindo</ion-card-title>
+        <ion-card-subtitle>Faça login para gerenciar suas vendas</ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        <form (ngSubmit)="onLogin()">
+          <ion-item class="custom-input-item" lines="none">
+            <ion-icon name="person" slot="start" class="input-icon"></ion-icon>
+            <ion-input 
+              name="username" 
+              type="text" 
+              placeholder="Usuário (Ex: admin)" 
+              [(ngModel)]="loginData.username"
+              required>
+            </ion-input>
+          </ion-item>
+
+          <ion-item class="custom-input-item" lines="none">
+            <ion-icon name="lock-closed" slot="start" class="input-icon"></ion-icon>
+            <ion-input 
+              name="password" 
+              type="password" 
+              placeholder="Senha (Ex: admin)" 
+              [(ngModel)]="loginData.password"
+              required>
+            </ion-input>
+          </ion-item>
+
+          <ion-button 
+            type="submit" 
+            expand="block" 
+            color="primary" 
+            class="login-button ion-margin-top">
+            <ion-icon name="log-in" slot="end"></ion-icon>
+            Entrar
+          </ion-button>
+        </form>
+
+        <div class="divider">
+          <span>ou</span>
+        </div>
+
+        <ion-button 
+          fill="clear" 
+          expand="block" 
+          color="secondary" 
+          class="register-button"
+          (click)="onCreateUser()">
+          <ion-icon name="person-add" slot="start"></ion-icon>
+          Criar Novo Usuário
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <div class="login-footer">
+      <p>Desenvolvido por Mikaela Marcucci</p>
+    </div>
+  </div>
+
+  <ion-toast 
+    [isOpen]="isToastOpen" 
+    [message]="toastMessage" 
+    [duration]="3000" 
+    (didDismiss)="setToastOpen(false)"
+    class="custom-toast">
+  </ion-toast>
+</ion-content>

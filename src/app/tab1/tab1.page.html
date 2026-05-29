@@ -1,17 +1,194 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 1
-    </ion-title>
+  <ion-toolbar color="primary">
+    <ion-title>Cadastros</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content [fullscreen]="true" class="ion-padding green-bg">
+  <div class="registration-container">
+    <div class="segment-container">
+      <ion-segment [(ngModel)]="currentSegment" class="green-segment">
+        <ion-segment-button value="cliente">
+          <ion-icon name="people"></ion-icon>
+          <ion-label>Clientes</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="produto">
+          <ion-icon name="cube"></ion-icon>
+          <ion-label>Produtos</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="usuario">
+          <ion-icon name="person-add"></ion-icon>
+          <ion-label>Usuários</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+    <!-- CLIENT REGISTRATION FORM -->
+    <div *ngIf="currentSegment === 'cliente'">
+      <ion-card class="form-card">
+        <ion-card-header>
+          <ion-card-title>Novo Cliente</ion-card-title>
+          <p class="form-subtitle">Cadastre os dados cadastrais básicos do cliente</p>
+        </ion-card-header>
+
+        <ion-card-content>
+          <div class="form-group">
+            <ion-item class="form-item" lines="none">
+              <ion-label position="stacked">Nome Completo *</ion-label>
+              <ion-input 
+                type="text" 
+                placeholder="Ex: João da Silva" 
+                [(ngModel)]="clientForm.nome"
+                required>
+              </ion-input>
+            </ion-item>
+
+            <ion-item class="form-item" lines="none">
+              <ion-label position="stacked">CPF *</ion-label>
+              <ion-input 
+                type="text" 
+                placeholder="000.000.000-00" 
+                [value]="clientForm.cpf"
+                (ionInput)="onCPFInput($event)"
+                required>
+              </ion-input>
+            </ion-item>
+
+            <ion-item class="form-item" lines="none">
+              <ion-label position="stacked">E-mail</ion-label>
+              <ion-input 
+                type="email" 
+                placeholder="Ex: joao@email.com" 
+                [(ngModel)]="clientForm.email">
+              </ion-input>
+            </ion-item>
+
+            <ion-item class="form-item" lines="none">
+              <ion-label position="stacked">Telefone / WhatsApp</ion-label>
+              <ion-input 
+                type="tel" 
+                placeholder="Ex: (11) 99999-9999" 
+                [(ngModel)]="clientForm.telefone">
+              </ion-input>
+            </ion-item>
+          </div>
+
+          <ion-button expand="block" color="success" class="action-btn" (click)="saveClient()">
+            <ion-icon name="save" slot="start"></ion-icon>
+            Cadastrar Cliente
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- PRODUCT REGISTRATION FORM -->
+    <div *ngIf="currentSegment === 'produto'">
+      <ion-card class="form-card">
+        <ion-card-header>
+          <ion-card-title>Novo Produto</ion-card-title>
+          <p class="form-subtitle">Insira o item no estoque e defina seu preço de venda</p>
+        </ion-card-header>
+
+        <ion-card-content>
+          <div class="form-group">
+            <ion-item class="form-item" lines="none">
+              <ion-label position="stacked">Nome do Produto *</ion-label>
+              <ion-input 
+                type="text" 
+                placeholder="Ex: Teclado Sem Fio" 
+                [(ngModel)]="productForm.nome"
+                required>
+              </ion-input>
+            </ion-item>
+
+            <ion-item class="form-item" lines="none">
+              <ion-label position="stacked">Preço de Venda (R$) *</ion-label>
+              <ion-input 
+                type="number" 
+                placeholder="0.00" 
+                [(ngModel)]="productForm.preco_venda"
+                required>
+              </ion-input>
+            </ion-item>
+
+            <ion-item class="form-item" lines="none">
+              <ion-label position="stacked">Quantidade Inicial em Estoque</ion-label>
+              <ion-input 
+                type="number" 
+                placeholder="Ex: 10" 
+                [(ngModel)]="productForm.quantidade_estoque">
+              </ion-input>
+            </ion-item>
+          </div>
+
+          <ion-button expand="block" color="success" class="action-btn" (click)="saveProduct()">
+            <ion-icon name="save" slot="start"></ion-icon>
+            Cadastrar Produto
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- USER REGISTRATION FORM -->
+    <div *ngIf="currentSegment === 'usuario'">
+      <ion-card class="form-card">
+        <ion-card-header>
+          <ion-card-title>Novo Usuário do Sistema</ion-card-title>
+          <p class="form-subtitle">Cadastre novos operadores para acessar o sistema</p>
+        </ion-card-header>
+
+        <ion-card-content>
+          <div class="form-group">
+            <ion-item class="form-item" lines="none">
+              <ion-label position="stacked">Nome Completo *</ion-label>
+              <ion-input 
+                type="text" 
+                placeholder="Ex: Carlos Henrique" 
+                [(ngModel)]="userForm.nome"
+                required>
+              </ion-input>
+            </ion-item>
+
+            <ion-item class="form-item" lines="none">
+              <ion-label position="stacked">Login de Acesso *</ion-label>
+              <ion-input 
+                type="text" 
+                placeholder="Ex: carlos.operador" 
+                [(ngModel)]="userForm.login"
+                required>
+              </ion-input>
+            </ion-item>
+
+            <ion-item class="form-item" lines="none">
+              <ion-label position="stacked">Senha de Acesso *</ion-label>
+              <ion-input 
+                type="password" 
+                placeholder="Mínimo 4 caracteres" 
+                [(ngModel)]="userForm.senha"
+                required>
+              </ion-input>
+            </ion-item>
+          </div>
+
+          <ion-button expand="block" color="success" class="action-btn" (click)="saveUser()">
+            <ion-icon name="save" slot="start"></ion-icon>
+            Cadastrar Usuário
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+
+  <!-- DISCREET BACK TO LOGIN LINK -->
+  <div class="back-to-login-container print-hide">
+    <a (click)="goToLogin()" class="back-to-login-link">Voltar à tela de Login</a>
+  </div>
+
+  <ion-toast 
+    [isOpen]="isToastOpen" 
+    [message]="toastMessage" 
+    [duration]="3000" 
+    (didDismiss)="setToastOpen(false)"
+    class="custom-toast">
+  </ion-toast>
 </ion-content>

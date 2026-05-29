@@ -35,3 +35,68 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+/* Custom Green Alert Dialogs styling */
+.green-alert {
+  .alert-wrapper {
+    border-radius: 16px;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+  }
+  .alert-title {
+    color: #15803d;
+    font-weight: 700;
+  }
+  .alert-button {
+    color: #16a34a !important;
+    font-weight: 700;
+  }
+}
+
+/* Discreet logout/back-to-login link styling */
+.back-to-login-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+  margin-bottom: 16px;
+  width: 100%;
+  clear: both;
+}
+
+.back-to-login-link {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  cursor: pointer;
+
+  &:hover {
+    color: #16a34a;
+    text-decoration: underline;
+  }
+}
+
+/* Print layout optimizations */
+@media print {
+  ion-tab-bar, 
+  ion-header,
+  ion-button,
+  .print-hide,
+  .action-btn,
+  .back-to-login-container {
+    display: none !important;
+  }
+  
+  ion-content {
+    --background: #ffffff !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  
+  .vendas-container,
+  .consultas-container {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
