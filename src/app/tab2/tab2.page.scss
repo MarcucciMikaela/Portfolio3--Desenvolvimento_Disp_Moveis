@@ -68,7 +68,7 @@
 .product-selection-row {
   display: flex;
   gap: 12px;
-  align-items: flex-start;
+  align-items: stretch;
 
   .product-select {
     flex: 3;

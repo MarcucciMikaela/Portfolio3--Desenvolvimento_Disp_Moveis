@@ -8,15 +8,15 @@
   <div class="consultas-container">
     <!-- SEGMENT SWITCHER -->
     <ion-segment [(ngModel)]="currentSegment" (ionChange)="onSegmentChange()" color="primary">
-      <ion-segment-button value="produto">
+      <ion-segment-button value="produto" layout="icon-top">
         <ion-icon name="cube"></ion-icon>
         <ion-label>Produtos</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="cliente">
+      <ion-segment-button value="cliente" layout="icon-top">
         <ion-icon name="people"></ion-icon>
         <ion-label>Clientes</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="usuario">
+      <ion-segment-button value="usuario" layout="icon-top">
         <ion-icon name="person"></ion-icon>
         <ion-label>Usuários</ion-label>
       </ion-segment-button>

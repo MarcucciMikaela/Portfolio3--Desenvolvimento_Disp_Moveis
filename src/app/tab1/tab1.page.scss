@@ -24,14 +24,18 @@
     --color-checked: #ffffff;
     --color: #64748b;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.72rem;
     border-radius: 8px;
     margin: 2px;
-    min-height: 40px;
+    min-height: 48px;
+    --padding-top: 4px;
+    --padding-bottom: 4px;
+    --padding-start: 2px;
+    --padding-end: 2px;
 
     ion-icon {
       font-size: 18px;
-      margin-right: 6px;
+      margin-bottom: 2px;
     }
   }
 }

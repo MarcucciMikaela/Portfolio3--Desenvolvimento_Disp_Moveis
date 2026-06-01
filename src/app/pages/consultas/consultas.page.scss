@@ -21,12 +21,21 @@ ion-segment {
     --color-checked: var(--ion-color-primary);
     --indicator-color: transparent;
     font-weight: 600;
-    font-size: 0.9rem;
-    min-height: 40px;
+    font-size: 0.72rem;
+    min-height: 48px;
+    --padding-top: 4px;
+    --padding-bottom: 4px;
+    --padding-start: 2px;
+    --padding-end: 2px;
 
     &.segment-button-checked {
       background: rgba(21, 128, 61, 0.08);
       border-radius: 8px;
+    }
+
+    ion-icon {
+      font-size: 18px;
+      margin-bottom: 2px;
     }
   }
 }
@@ -128,6 +137,7 @@ ion-segment {
   .email-tag {
     width: 100%;
     color: #64748b;
+    word-break: break-all;
   }
 }
 
@@ -135,23 +145,33 @@ ion-segment {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 4px;
+
+  h3 {
+    flex: 1 1 120px;
+    margin: 0;
+  }
 
   .price-label {
     font-weight: 800;
     color: var(--ion-color-primary);
     font-size: 1.05rem;
+    white-space: nowrap;
   }
 }
 
 .stock-status-line {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 4px;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
   font-size: 0.85rem;
 
   .stock-label {
     color: #64748b;
+    font-size: 0.8rem;
   }
 
   .stock-badge {
